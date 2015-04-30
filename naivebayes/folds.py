@@ -1,21 +1,15 @@
 import configs
 from commands import getstatusoutput as cmd
 import time
+from base import Base
 
-class Folds:
+class Folds(Base):
     def __init__(self, baseDir ,logFile = None, start_file = configs.start_file, end_file = configs.end_file):
         self.logFile = logFile
         self.baseDir = baseDir
         self.start_file = start_file
         self.end_file = end_file
-    def __print__(self, message):
-        msg = "FOLDS[ " + message + "]"
-        if self.logFile == None:
-            print msg
-        else:
-            f = open(logFile,"a")
-            f.writeline(msg)
-            f.close()
+        self.name = "FOLDS"
     def create(self):
         self.__print__("Creating")
         self.folds = []
@@ -36,7 +30,7 @@ class Folds:
             self.__print__("Loading fold " +  str(f))
             for i in range(self.folds[f]["start"],self.folds[f]["end"]):
                fname = self.baseDir + str(i) + ".txt"
-               self.folds[f]["data"] += open(fname).read()
+               self.folds[f]["data"] += " " + open(fname).read()
             self.folds[f]["size"] = len(self.folds[f]["data"])  
         self.__print__("Loading folds took " + 
             str(round(time.time() - start,4)) + "s")
@@ -50,7 +44,7 @@ class Folds:
     def merge(self, toMerge):
         data = ""
         for f in toMerge:
-            data += self.folds[f]["data"]
+            data += " " + self.folds[f]["data"]
         return data
     @staticmethod
     def mergeFolds(folds1, folds2):
