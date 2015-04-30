@@ -46,9 +46,8 @@ class Folds(Base):
         for f in toMerge:
             data += " " + self.folds[f]["data"]
         return data
-    @staticmethod
-    def mergeFolds(folds1, folds2):
-        pass
+
+
 if __name__ == "__main__":
     pos = Folds(configs.db_dir_pos) 
     pos.create()
