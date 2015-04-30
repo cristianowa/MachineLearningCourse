@@ -1,5 +1,5 @@
 from folds import Folds
-from parser import Extractor
+from parser import Parser
 import configs
 
 
@@ -9,12 +9,16 @@ def validation(fold, folds):
     foldsRange.remove(fold)
     postext = folds["pos"].merge(foldsRange)
     negtext = folds["neg"].merge(foldsRange)
-    Extractor.count(postext)
-    posvoc = Extractor.getVocabulary()
-    Extractor.printInfo()
-    Extractor.count(negtext)
-    negvoc = Extractor.getVocabulary()
-    Extractor.printInfo()
+    posparser = Parser(postext)
+    negparser = Parser(negtext)
+    posparser.extract()
+    posparser.count()
+    posparser.printInfo()
+    print posparser.getCount()
+    negparser.extract()
+    negparser.count()
+    negparser.printInfo()
+    
 allfolds = {}
 
 allfolds["pos"] = Folds(configs.db_dir_pos)
