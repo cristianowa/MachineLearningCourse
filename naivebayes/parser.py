@@ -1,4 +1,5 @@
 import re
+import configs
 from base import Base
 
 
@@ -23,6 +24,8 @@ class Parser(Base):
         self.counts = {}
         for word in words:
             self.counts[word] = self.words.count(word)
+            if configs.laplace_estimator:
+                self.counts[word] += 1
         return self.counts
     def getVocabulary(self):
         return self.vocabulary
