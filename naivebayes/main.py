@@ -1,5 +1,6 @@
 from folds import Folds
 from parser import Parser
+from wordinfo import WordsInfo
 import configs
 
 
@@ -18,32 +19,17 @@ def validation(fold, info):
             allvocabs = info[cls]["vocab"]
             continue
         allvocabs.merge(info[cls]["vocab"])
-    #consilidate all vocabs
-#    for 
-    #Another FOR
     for cls in info.keys():
         info[cls]["parser"].count(allvocabs.get())
         info[cls]["parser"].printInfo()
         info[cls]["count"] = info[cls]["parser"].getCount()
-
-    info["__total__words__"] = {}
-    for cls in info.keys():
-        if cls == "__total__words__":
-            continue
-        for word in  info[cls]["count"].keys():
-            if word not in info["__total__words__"].keys():
-                info["__total__words__"][word] = {}
-                info["__total__words__"][word]["count"] = info[cls]["count"][word]
-            else:
-                info["__total__words__"][word]["count"] += info[cls]["count"][word]
-    for word in info["__total__words__"].keys():
-        for cls in info.keys():
-            if cls == "__total__words__":
-                continue
-            info["__total__words__"][word][cls] = float(info[cls]["count"][word])/ info["__total__words__"][word]["count"]
-    for word in info["__total__words__"].keys()[0:10]:
+    words_info =  WordsInfo(info)
+    words_info.count()
+    words_info.calc_prob()
+    for word in words_info.get_prob().keys()[0:10]:
         print word
-        print  info["__total__words__"][word]
+        print words_info.get_prob()[word]
+#    print word_info.get_prob()
         
 infos= {}
 for cls in configs.db_dirs:
