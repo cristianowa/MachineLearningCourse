@@ -29,5 +29,8 @@ class Parser(Base):
     def getCount(self):
         return self.counts
     def printInfo(self):
-        self.__print__("Vocabulary size : " + str(len(self.vocabulary)))
+        self.__print__("Vocabulary size : " + str(len(self.vocabulary.get())))
+        self.__print__("Count size : " + str(len(self.counts)))
+
+
         
