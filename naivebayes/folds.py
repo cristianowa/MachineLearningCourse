@@ -25,29 +25,29 @@ class Folds(Base):
             fold["size"] = 0
             self.folds.append(fold)
     def load(self):
-        start = time.time()
         for f in range(len(self.folds)):
             self.__print__("Loading fold " +  str(f))
             for i in range(self.folds[f]["start"],self.folds[f]["end"]):
                fname = self.baseDir + str(i) + ".txt"
                self.folds[f]["data"] += " " + open(fname).read()
             self.folds[f]["size"] = len(self.folds[f]["data"])  
-        self.__print__("Loading folds took " + 
-            str(round(time.time() - start,4)) + "s")
     def foldsInfo(self):
         #TODO: this can be a pretty table
         for f in range(len(self.folds)):
-            self.__print__("Fold  : " + str(f))
-            self.__print__("Start : " + str(self.folds[f]["start"]))
-            self.__print__("End   : " + str(self.folds[f]["end"]))
-            self.__print__("Size  : " + str(self.folds[f]["size"]))
+            self.__print__("Fold    : " + str(f))
+            self.__print__("Start   : " + str(self.folds[f]["start"]))
+            self.__print__("End     : " + str(self.folds[f]["end"]))
+            self.__print__("Size(b) : " + str(self.folds[f]["size"]))
     def merge(self, toMerge):
         data = ""
         for f in toMerge:
             data += " " + self.folds[f]["data"]
         return data
-
-
+    def listOfFiles(self, fold):
+        fileList = []
+        for i in range(self.folds[fold]["start"],self.folds[fold]["end"]):
+            fileList.append(self.baseDir + str(i) + ".txt")
+        return fileList
 if __name__ == "__main__":
     pos = Folds(configs.db_dir_pos) 
     pos.create()
