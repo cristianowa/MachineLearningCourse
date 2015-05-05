@@ -2,7 +2,7 @@ from folds import Folds
 from parser import Parser
 from wordinfo import WordsInfo
 import configs
-
+from predictor import Predictor
 
 
 def validation(fold, info):
@@ -26,9 +26,7 @@ def validation(fold, info):
     words_info =  WordsInfo(info)
     words_info.count()
     words_info.calc_prob()
-    for word in words_info.get_prob().keys()[0:10]:
-        print word
-        print words_info.get_prob()[word]
+    predictor = Predictor(words_info.get_prob())
 #    print word_info.get_prob()
         
 infos= {}
@@ -38,7 +36,9 @@ for cls in configs.db_dirs:
     
 
 print infos
-for f in infos:
-    infos[f]["folds"].create()
-    infos[f]["folds"].load()
+for cls in infos:
+    infos[cls]["folds"].create()
+    infos[cls]["folds"].load()
+    infos[cls]["folds"].foldsInfo()
 validation(0, infos)
+
