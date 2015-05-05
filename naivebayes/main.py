@@ -32,14 +32,19 @@ def validation(fold, info):
             continue
         for word in  info[cls]["count"].keys():
             if word not in info["__total__words__"].keys():
-                info["__total__words__"][word] = info[cls]["count"][word]
+                info["__total__words__"][word] = {}
+                info["__total__words__"][word]["count"] = info[cls]["count"][word]
             else:
-                info["__total__words__"][word] += info[cls]["count"][word]
+                info["__total__words__"][word]["count"] += info[cls]["count"][word]
     for word in info["__total__words__"].keys():
         for cls in info.keys():
             if cls == "__total__words__":
                 continue
-            
+            info["__total__words__"][word][cls] = float(info[cls]["count"][word])/ info["__total__words__"][word]["count"]
+    for word in info["__total__words__"].keys()[0:10]:
+        print word
+        print  info["__total__words__"][word]
+        
 infos= {}
 for cls in configs.db_dirs:
     infos[cls] = {}
