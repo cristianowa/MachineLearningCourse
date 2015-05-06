@@ -7,13 +7,17 @@ class WordsInfo(Base):
         self.info = {}
         self.baseinfo = baseinfo
     def count(self):
-        self.__print__("Count")
         for cls in self.baseinfo.keys():
+            self.__print__("Count " +cls )
             for word in self.baseinfo[cls]["count"].keys():
-                if word not in self.info.keys():
+#                if word not in self.info.keys():
+                try:
+                    x = self.info[word]
+                except:
                     self.info[word] = {}
                     self.info[word]["count"] = 0
                     self.info[word]["prob"] = {}
+
                 self.info[word]["count"] += self.baseinfo[cls]["count"][word]
 
     def calc_prob(self):

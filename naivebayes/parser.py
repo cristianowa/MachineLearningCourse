@@ -18,14 +18,21 @@ class Parser(Base):
         self.logFile = logFile
         self.text = textFile
     def extract(self):
+        self.__print__("Extracting")
         self.words = re.compile('\w+').findall(self.text)
         self.vocabulary = Vocabulary(self.words)
     def count(self, words):
-        self.counts = {}
-        for word in words:
-            self.counts[word] = self.words.count(word)
-            if configs.laplace_estimator:
-                self.counts[word] += 1
+        self.__print__("Counting")
+        if configs.laplace_estimator:
+            self.counts = dict.fromkeys(words,1)
+        else:
+            self.counts = dict.fromkeys(words,0)
+        #this count of words in word is n^2
+        #we can better this be looking at all self.words
+        #and adding it to a dictionary
+        
+        for word in self.words:
+            self.counts[word] += 1
         return self.counts
     def getVocabulary(self):
         return self.vocabulary
