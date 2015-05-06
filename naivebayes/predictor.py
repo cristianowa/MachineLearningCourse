@@ -25,3 +25,10 @@ class Predictor(Base):
                     print "Word not found : " + word
         prediction = max(acc_prob.iteritems(), key=operator.itemgetter(1))[0]
         self.__print__("value predicted is : " + prediction)
+        return prediction
+    def predictFile(self, filename):
+        if type(filename) == type([]):
+            for f in filename:
+               pass 
+        elif type(filename) == type("string"):
+            return self.predict(open(filename).read())
