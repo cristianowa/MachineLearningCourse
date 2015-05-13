@@ -5,7 +5,10 @@ from base import Base
 
 class Vocabulary:
     def __init__(self, words):
-        self.vocabulary = list(set(words))
+        if configs.load_from_file:
+            self.vocabulary = open(configs.vocabulary_file).read().split("\n")
+        else:
+            self.vocabulary = list(set(words))
     def merge(self, vocabulary):
         self.vocabulary += vocabulary.vocabulary
         self.vocabulary = list(set(self.vocabulary))
@@ -23,6 +26,7 @@ class Parser(Base):
         self.vocabulary = Vocabulary(self.words)
     def count(self, words):
         self.__print__("Counting")
+        print words
         if configs.laplace_estimator:
             self.counts = dict.fromkeys(words,1)
         else:
@@ -30,11 +34,16 @@ class Parser(Base):
         #this count of words in word is n^2
         #we can better this be looking at all self.words
         #and adding it to a dictionary
-        
+         
         for word in self.words:
-            self.counts[word] += 1
+            try:
+                self.counts[word] += 1
+            except:
+                pass
+#                self.__print__(word + " not found")
         return self.counts
     def getVocabulary(self):
+        
         return self.vocabulary
     def getCount(self):
         return self.counts
