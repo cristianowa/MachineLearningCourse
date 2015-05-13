@@ -6,7 +6,9 @@ db_dirs = {
 "neg":db_dir + "/neg/"
 }
 start_file = 1#5
+start_file = 5
 end_file = 100#24004
+end_file = 24004
 #Folding configuration
 folds = 10
 laplace_estimator=True

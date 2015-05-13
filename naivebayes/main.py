@@ -26,16 +26,18 @@ def validation(fold, info):
     words_info =  WordsInfo(info)
     words_info.count()
     words_info.calc_prob()
+
     predictor = Predictor(words_info.get_prob())
-#    print word_info.get_prob()
-        
+    results = {}
+    for cls in info.keys():
+        results.update(dict.fromkeys(info[cls]["folds"].listOfFiles(fold), {"oracle":cls}))
+    results = predictor.predictAll(results)
 infos= {}
 for cls in configs.db_dirs:
     infos[cls] = {}
     infos[cls]["folds"] = Folds(configs.db_dirs[cls])
     
 
-print infos
 for cls in infos:
     infos[cls]["folds"].create()
     infos[cls]["folds"].load()

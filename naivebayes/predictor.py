@@ -1,3 +1,4 @@
+import re
 from base import Base
 import operator
 
@@ -11,7 +12,7 @@ class Predictor(Base):
     def loadFromFile(self, filename):
         pass
     def predict(self, text):
-        textwords = re.compile('\w+').findall(self.text)
+        textwords = re.compile('\w+').findall(text)
         acc_prob = {}
         #recover all classes used
         for p in self.probs[self.probs.keys()[0]]["prob"]:
@@ -27,8 +28,8 @@ class Predictor(Base):
         self.__print__("value predicted is : " + prediction)
         return prediction
     def predictFile(self, filename):
-        if type(filename) == type([]):
-            for f in filename:
-               pass 
-        elif type(filename) == type("string"):
-            return self.predict(open(filename).read())
+        return self.predict(open(filename).read())
+    def predictAll(self, data):
+        for f in data.keys():
+            data[f]["predicted"] = self.predictFile(f)
+        return data
