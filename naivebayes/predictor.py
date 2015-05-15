@@ -42,7 +42,7 @@ class Predictor(Base):
         return val
     def predictAll(self, data):
 	predicted = {}
-        self.__print__("predicting " + len(data) + " files")
+        self.__print__("predicting " + str(len(data)) + " files")
         for f in data.keys():
             predicted[f] = self.predictFile(f)
         return predicted
