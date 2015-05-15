@@ -12,6 +12,7 @@ class Validation(Base):
         self.predictors = dict.fromkeys(range(configs.folds),None)
         self.results = dict.fromkeys(range(configs.folds),None)
         self.evaluation = dict.fromkeys(range(configs.folds),None)
+        self.predicted = dict.fromkeys(range(configs.folds),None)
     def buildPredictor(self,fold):
         self.__print__("Building predictor for fold " + str(fold))
         foldsRange = range(10)
@@ -46,14 +47,16 @@ class Validation(Base):
         self.results[fold] = {}
         for cls in self.info.keys():
             self.results[fold].update(dict.fromkeys(self.info[cls]["folds"].listOfFiles(fold), {"oracle":cls}))
-        self.results[fold] = self.predictors[fold].predictAll(self.results[fold])
+        #self.results[fold] = self.predictors[fold].predictAll(self.results[fold])
+        self.predicted[fold] = self.predictors[fold].predictAll(self.results[fold])
     def evalPredictor(self, fold):
         classes = self.info.keys()
-        confusion =dict.fromkeys(classes,  dict.fromkeys(classes, 0))
-        print  self.results[fold]
-        for word in self.results[fold]:
-            correct = self.results[fold][word]["oracle"]
-            predicted = self.results[fold][word]["predicted"]
+        confusion = dict.fromkeys(classes,  dict.fromkeys(classes, 0))
+        #print  self.results[fold]
+
+        for f in self.results[fold]:
+            correct = self.results[fold][f]["oracle"]
+            predicted = self.predicted[fold][f]
             confusion[correct][predicted] += 1
         self.__print__(str(confusion))
         self.evaluation[fold] = confusion
