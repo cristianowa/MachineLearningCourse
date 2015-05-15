@@ -48,6 +48,18 @@ class Folds(Base):
         for i in range(self.folds[fold]["start"],self.folds[fold]["end"]):
             fileList.append(self.baseDir + str(i) + ".txt")
         return fileList
+
+def AllFolds():
+    infos= {}
+    for cls in configs.db_dirs:
+        infos[cls] = {}
+        infos[cls]["folds"] = Folds(configs.db_dirs[cls])
+    for cls in infos:
+        infos[cls]["folds"].create()
+        infos[cls]["folds"].load()
+        infos[cls]["folds"].foldsInfo()
+    return infos
+
 if __name__ == "__main__":
     pos = Folds(configs.db_dir_pos) 
     pos.create()

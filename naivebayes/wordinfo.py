@@ -10,7 +10,6 @@ class WordsInfo(Base):
         for cls in self.baseinfo.keys():
             self.__print__("Count " +cls )
             for word in self.baseinfo[cls]["count"].keys():
-#                if word not in self.info.keys():
                 try:
                     x = self.info[word]
                 except:

@@ -26,7 +26,6 @@ class Parser(Base):
         self.vocabulary = Vocabulary(self.words)
     def count(self, words):
         self.__print__("Counting")
-        print words
         if configs.laplace_estimator:
             self.counts = dict.fromkeys(words,1)
         else:
