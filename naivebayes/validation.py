@@ -51,15 +51,68 @@ class Validation(Base):
         self.predicted[fold] = self.predictors[fold].predictAll(self.results[fold])
     def evalPredictor(self, fold):
         classes = self.info.keys()
-        confusion = dict.fromkeys(classes,  dict.fromkeys(classes, 0))
-        #print  self.results[fold]
-
-        for f in self.results[fold]:
+        confusion = dict.fromkeys(classes, None)
+        for k in confusion.keys():
+            confusion[k] = dict.fromkeys(classes, 0)
+        print confusion
+        for f in self.predicted[fold].keys():
             correct = self.results[fold][f]["oracle"]
             predicted = self.predicted[fold][f]
             confusion[correct][predicted] += 1
         self.__print__(str(confusion))
-        self.evaluation[fold] = confusion
+        self.evaluation[fold] = {}
+        self.evaluation[fold]["confusion"] = confusion
+        self.evaluation[fold]["measures"] = self.Measure(confusion)
+    def Measure(self, confusion):
+        measures = {}
+        total = 0.0
+        for cls in confusion.keys():
+            for cls2 in confusion[cls].keys():
+                total += confusion[cls][cls2]
+        correct = 0.0
+        for cls in confusion.keys():
+            correct += confusion[cls][cls]
+        measures["accuracy"] = correct * 1.0 / total
+        measures["error"]    = (total - correct) * 1.0 /total
+        measures["recall"] = confusion["pos"]["pos"]*1.0 / ( confusion["pos"]["pos"] + confusion["pos"]["neg"] )
+        measures["specificity"] = confusion["neg"]["neg"]*1.0 / ( confusion["neg"]["neg"] + confusion["neg"]["pos"] )
+        measures["false positive"] = confusion["neg"]["pos"]*1.0/ ( confusion["neg"]["pos"] + confusion["neg"]["neg"] )
+        measures["false negative"] = confusion["pos"]["neg"]*1.0/ ( confusion["pos"]["neg"] + confusion["pos"]["pos"] )
+        print measures
+        return measures
+    def printPredictorPerformance(self, fold):
+        if fold == "all":
+            matrix = {}
+            matrix["confusion"] = self.combinedConfusion
+            matrix["measures"] = self.combinedConfusionMeasure
+        else:
+            matrix = self.evaluation[fold]
+        #TODO: this should be extended for multiple classes
+        template =  "CONFUSION MATRIX : " + str(fold) + "\n"
+        template += " *----------------------------------------------*\n"
+        template += " |        | Predicted values                    |\n"
+        template += " +----------------------------------------------+\n"
+        template += " | Real   |           | Positive   | Negative   |\n"
+        template += " | values | Positive  | C1XC1      | C1XC2      |\n"
+        template += " |        | Negative  | C2XC1      | C2XC2      |\n"
+        template += " +----------------------------------------------+\n"
+        for m in matrix["measures"].keys():
+            template+= " | " + m.rjust(17) + "  | " + str(round(matrix["measures"][m],3)).rjust(5) + "                   |\n"
+        template += " *----------------------------------------------*"
+        template = template.replace("C1XC1", str(matrix["confusion"]["pos"]["pos"]).rjust(5))
+        template = template.replace("C2XC1", str(matrix["confusion"]["pos"]["neg"]).rjust(5))
+        template = template.replace("C2XC2", str(matrix["confusion"]["neg"]["neg"]).rjust(5))
+        template = template.replace("C1XC2", str(matrix["confusion"]["neg"]["pos"]).rjust(5))
+        print template
+    def mergeAllConfusion(self):
+        self.combinedConfusion = dict.fromkeys(self.evaluation[0]["confusion"], None)
+        for k in self.combinedConfusion.keys():
+            self.combinedConfusion[k] = dict.fromkeys(self.combinedConfusion.keys(), 0)
+        for i in range(configs.folds):
+            for j in self.evaluation[i]["confusion"].keys():
+               for k in self.evaluation[i]["confusion"][j].keys():
+                    self.combinedConfusion[j][k] += self.evaluation[i]["confusion"][j][k]
+        self.combinedConfusionMeasure = self.Measure(self.combinedConfusion)
     def loadPredictors(self):
         for i in range(configs.folds):
             self.loadPredictor(i, "predictor" + str(i) + ".pd")
@@ -75,3 +128,7 @@ class Validation(Base):
     def evalPredictors(self):
         for i in range(configs.folds):
             self.evalPredictor(i)
+    def printPredictorsPerformance(self):        
+        for i in range(configs.folds):
+            self.printPredictorPerformance(i)
+        self.printPredictorPerformance("all")    
