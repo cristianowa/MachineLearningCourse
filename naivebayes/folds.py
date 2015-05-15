@@ -45,8 +45,9 @@ class Folds(Base):
         return data
     def listOfFiles(self, fold):
         fileList = []
-        for i in range(self.folds[fold]["start"],self.folds[fold]["end"]):
+        for i in range(self.folds[fold]["start"],self.folds[fold]["end"] + 1):
             fileList.append(self.baseDir + str(i) + ".txt")
+        self.__print__("ListOfFiles of fold " + str(fold) + " size is " + str(len(fileList)))
         return fileList
 
 def AllFolds():
