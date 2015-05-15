@@ -4,7 +4,8 @@ from validation import Validation
   
 infos = AllFolds()
 val = Validation(infos)
-val.buildPredictor(0)
-val.savePredictor(0, "zero.pl")
-val.testPredictor(0)
-val.evalPredictor(0)
+val.buildPredictors()
+val.testPredictors()
+val.evalPredictors()
+val.mergeAllConfusion()
+val.printPredictorsPerformance()
