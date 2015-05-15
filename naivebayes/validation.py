@@ -78,7 +78,6 @@ class Validation(Base):
         measures["specificity"] = confusion["neg"]["neg"]*1.0 / ( confusion["neg"]["neg"] + confusion["neg"]["pos"] )
         measures["false positive"] = confusion["neg"]["pos"]*1.0/ ( confusion["neg"]["pos"] + confusion["neg"]["neg"] )
         measures["false negative"] = confusion["pos"]["neg"]*1.0/ ( confusion["pos"]["neg"] + confusion["pos"]["pos"] )
-        print measures
         return measures
     def printPredictorPerformance(self, fold):
         if fold == "all":

@@ -5,9 +5,7 @@ db_dirs = {
 "pos":db_dir + "/pos/",
 "neg":db_dir + "/neg/"
 }
-start_file = 1#5
 start_file = 5
-end_file = 100#24004
 end_file = 24004
 #Vocabulary
 load_from_file=True
