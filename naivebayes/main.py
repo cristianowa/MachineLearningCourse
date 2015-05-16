@@ -11,8 +11,7 @@ def build(save = False):
  
 def run(run = False):  
     if run:
-        infos = AllFolds()
-        val = Validation(infos)
+        val = Validation({})
         val.loadPredictors()
     else:
         val = build()
