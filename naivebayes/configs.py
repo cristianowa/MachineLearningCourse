@@ -12,7 +12,8 @@ load_from_file=True
 vocabulary_file= db_dir + "imdb.vocab"
 #Folding configuration
 folds = 10
+#Misc
 laplace_estimator=True
-
+per_word_weight=False#True
 
 

@@ -1,5 +1,5 @@
 from base import Base
-
+import configs
 class WordsInfo(Base):
     def __init__(self, baseinfo):
         self.name = "WORDINFO"
@@ -21,6 +21,13 @@ class WordsInfo(Base):
 
     def calc_prob(self):
         self.__print__("Calc Prob")
+        word_total_count = 0
+        if configs.per_word_weight:
+            for word in self.info.keys():
+                for cls in self.baseinfo.keys():
+                    word_total_count += 1
+        else:
+            word_total_count = 1
         for word in self.info.keys():
             for cls in self.baseinfo.keys():
                 self.info[word]["prob"][cls] = float(self.baseinfo[cls]["count"][word]) / self.info[word]["count"]
