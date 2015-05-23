@@ -38,6 +38,8 @@ def pdf_multivariate_gauss(x, mu, cov):
     return float(part1 * np.exp(part2))
 
 classes = ["c1","c2"]
+colors = ["red", "blue"]
+colorsb = ["magenta", "green"]
 
 class Kmean:
     """ this assumes values in two dimensions"""
@@ -47,7 +49,6 @@ class Kmean:
         for k in self.groups: 
             self.groups[k] = { "points" :[], "mean": None , "centroid": None }
         self.centroids = False
-        self.colors = ["red", "blue", "green"]
         self.minx = 9999
         self.maxx = -9999
         self.miny = 9999
@@ -65,10 +66,10 @@ class Kmean:
             for v in self.groups[k]["points"]:
                 x.append(v[0])
                 y.append(v[1])
+            plt.scatter(x,y,c=colors[c])
+            plt.scatter(self.groups[k]["mean"][0], self.groups[k]["mean"][1],  marker='x', c= colors[c])
+            plt.scatter(self.groups[k]["centroid"][0], self.groups[k]["centroid"][1],  marker='v', c= colors[c])
             c += 1
-            plt.scatter(x,y,c=self.colors[c])
-            plt.scatter(self.groups[k]["mean"][0], self.groups[k]["mean"][1],  marker='x', c= self.colors[c])
-            plt.scatter(self.groups[k]["centroid"][0], self.groups[k]["centroid"][1],  marker='v', c= self.colors[c])
         if display:
             plt.show()
         savefig(name, bbox_inches='tight')
@@ -153,16 +154,19 @@ class EM:
        self.prev_set = None
        self.curr_set = None
     def plot(self, display = False, name = "plot.png"):
-       c = 0
+       dots = dict.fromkeys(classes, None )
+       for k in dots:
+            dots[k] = {"x":[], "y":[] }
        for v in self.values:
-           x = []
-           y = []
-           for k in classes:
-                 
-               x.append(v[0])
-               y.append(v[1])
-               c += 1
-               plt.scatter(x,y,c=self.colors[c])
+           dots[self.values[v]["class"]]["x"].append(v[0])
+           dots[self.values[v]["class"]]["y"].append(v[1])
+       c = 0
+       for k in classes: 
+           print dots[k]
+           x,y = np.random.multivariate_normal(self.means[k],self.covar[k],250).T
+           plt.plot(x,y,'x',color=colorsb[c])
+           plt.scatter(dots[k]["x"],dots[k]["y"],c=colors[c])
+           c += 1
        if display:
            plt.show()
        savefig(name, bbox_inches='tight')
@@ -218,15 +222,12 @@ class EM:
         print self.curr_set
         if self.prev_set == None:
             self.prev_set = copy.deepcopy(self.curr_set)
-            print 218
             return False
         else:
             if str(self.prev_set) == str(self.curr_set):
-                print 222
                 return True
             else:
                 self.prev_set = copy.deepcopy(self.curr_set)
-                print 226
                 return False
         
     def run(self):
@@ -244,5 +245,5 @@ if __name__ == "__main__":
     kcentre = kmean.getCentroids()
     kvalues = kmean.getValues()
     em = EM(kvalues, kcentre)
-    print kcentre
     em.run()
+    em.plot(True)
