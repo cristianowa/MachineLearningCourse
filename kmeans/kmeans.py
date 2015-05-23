@@ -1,3 +1,4 @@
+import copy
 from math import sqrt,pi,e
 from scipy.stats import multivariate_normal
 import time
@@ -149,6 +150,8 @@ class EM:
        for v in self.values:
             self.values[v] = {"gamma":{"c1":0, "c2":0 }, "class":"none"}
             self.values[v]["gamma"][values[v]] = 1
+       self.prev_set = None
+       self.curr_set = None
     def plot(self, display = False, name = "plot.png"):
        c = 0
        for v in self.values:
@@ -210,11 +213,29 @@ class EM:
             self.mixture[k] = float(count[k])/len(self.values)
             
     def convergence(self):
-        pass
+        self.curr_set = [ self.means, self.covar, self.mixture ]
+        print self.prev_set
+        print self.curr_set
+        if self.prev_set == None:
+            self.prev_set = copy.deepcopy(self.curr_set)
+            print 218
+            return False
+        else:
+            if str(self.prev_set) == str(self.curr_set):
+                print 222
+                return True
+            else:
+                self.prev_set = copy.deepcopy(self.curr_set)
+                print 226
+                return False
+        
     def run(self):
-#        while not self.convergence():
-         self.E()
-         self.M()
+         step = 0
+         while not self.convergence():
+            print "======================= STEP : " + str(step)
+            step += 1
+            self.E()
+            self.M()
 
 if __name__ == "__main__":
     values = load_dist("dist2.txt")
