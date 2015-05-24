@@ -1,6 +1,5 @@
 import copy
 from math import sqrt,pi,e
-from scipy.stats import multivariate_normal
 import time
 import matplotlib.pyplot as plt
 from pylab import savefig
@@ -70,9 +69,10 @@ class Kmean:
             plt.scatter(self.groups[k]["mean"][0], self.groups[k]["mean"][1],  marker='x', c= colors[c])
             plt.scatter(self.groups[k]["centroid"][0], self.groups[k]["centroid"][1],  marker='v', c= colors[c])
             c += 1
-        if display:
-            plt.show()
         savefig(name, bbox_inches='tight')
+        if display:
+            plt.title("K - Means ")
+            plt.show()
         plt.close()
     def update_centroids(self):
         if not self.centroids:
@@ -167,9 +167,10 @@ class EM:
            plt.plot(x,y,'x',color=colorsb[c])
            plt.scatter(dots[k]["x"],dots[k]["y"],c=colors[c])
            c += 1
-       if display:
-           plt.show()
        savefig(name, bbox_inches='tight')
+       if display:
+           plt.title("EM")
+           plt.show()
        plt.close()
     def N(self, x, u, z ):
         xx = np.array([[x[0]],[x[1]]])
@@ -237,11 +238,14 @@ class EM:
             step += 1
             self.E()
             self.M()
+            self.plot(False, "em-step"+str(step).zfill(3)+".png")
+
 
 if __name__ == "__main__":
     values = load_dist("dist2.txt")
     kmean = Kmean(values)
     kmean.run(True) 
+    kmean.plot(True)
     kcentre = kmean.getCentroids()
     kvalues = kmean.getValues()
     em = EM(kvalues, kcentre)
