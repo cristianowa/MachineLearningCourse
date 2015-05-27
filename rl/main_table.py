@@ -52,15 +52,17 @@ def content_line(column_witdh, content):
     ret = ""
     for i in range(len(column_witdh)):
         ret += corners["vertical"]["normal"]
-        ret += str(content[i]).rjust(column_witdh[i]) + " "
+        ret += content[i].rjust(column_witdh[i]) + " "
     ret += corners["vertical"]["normal"]
     return ret +"\n"
-def format_table( content, column_witdh=None):
+def format_table( content, column_witdh=None, backward = True):
     if column_witdh == None:
         column_witdh = [5] * len(content[0])
     ret = ""
-    for line in range(-1,len(content)):
-        print line
+    myrange = range(-1,len(content))
+    if backward:
+        myrange.reverse()
+    for line in myrange:
         if line == -1:
             ret += board_line("up", column_witdh)
         elif line == len(content) -1:
