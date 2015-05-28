@@ -62,16 +62,28 @@ def format_table( content, column_witdh=None, backward = True):
     myrange = range(-1,len(content))
     if backward:
         myrange.reverse()
+        first = "down"
+        last = "up"
+    else:
+        first = "up"
+        last = "down"
     for line in myrange:
         if line == -1:
-            ret += board_line("up", column_witdh)
-        elif line == len(content) -1:
+            if not backward:
+                ret += content_line(column_witdh, content[line])
+            ret += board_line(first, column_witdh)
+        elif not backward and line == len(content) -1:
             ret += content_line(column_witdh, content[line])
-            ret += board_line("down", column_witdh)
+            ret += board_line(last, column_witdh)
+        elif backward and line == 0:
+            ret += content_line(column_witdh, content[line])
+        elif backward and line == len(content) - 1:
+            ret += board_line(last, column_witdh)
+            ret += content_line(column_witdh, content[line])
+            ret += board_line("middle", column_witdh)
         else:
             ret += content_line(column_witdh, content[line])
             ret += board_line("middle", column_witdh)
-        print ret
     return ret
 
 if __name__ == "__main__":
