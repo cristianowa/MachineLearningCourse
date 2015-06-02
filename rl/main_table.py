@@ -1,14 +1,18 @@
 
 
 import asciart
-try:
-    from termcolor import colored
-except:
-    def colored(x, y):
+#try:
+#    from termcolor import colored
+#except:
+def colored(x, y):
         return x
 from state import State
 #directions
 directions = ["up", "down", "left", "right"]
+from configs import config
+
+def cleanstr(text):
+    return ''.join([i if ord(i) < 128 else ' ' for i in text])
 
 def cliff_expand(cliff):
     total = []
@@ -61,18 +65,20 @@ def fill_table(table, direction):
                     print_table[i][j] = "S"
             elif table[i][j].end:
                 if direction not in ["gradient", "reward"]:
-                    print_table[i][j] = " G " + str(round(table[i][j].dir(direction),3)) + " "
+                    print_table[i][j] = " G " + str(round(table[i][j].dir(direction),3)) 
  
                 else:
                     print_table[i][j] = " G "
             elif direction == "gradient":
 #                if table[i][j].analysed:
-                print_table[i][j] = "   " + colored(asciart.arrows[table[i][j].getBestAction()],"red") +"    "
+                print_table[i][j] = "   " + colored(asciart.arrows[table[i][j].getBestAction()],"red") 
             elif direction == "reward":
 #                if table[i][j].analysed:
                 print_table[i][j] = colored(str(table[i][j].reward).rjust(8),"red")
             else:
-                print_table[i][j] += "  " + colored(str(round(table[i][j].dir(direction),5)), "cyan") + "  "
+                print_table[i][j] += " " + colored(str(round(table[i][j].dir(direction),2)), "cyan") 
+            if len(print_table[i][j]) < 5:
+                print_table[i][j] += " "*(config.column_witdh - len(print_table[i][j]))
     return print_table
 
 def print_all_tables(table):
@@ -80,13 +86,13 @@ def print_all_tables(table):
         
         tbp = fill_table(table, d)
         print "=========== " + d + " ============="
-        print asciart.format_table(tbp, [8]*12)
+        print asciart.format_table(tbp, [config.column_witdh]*12)
     print "=========== Gradient ============="
     tbp = fill_table(table, "gradient")
-    print asciart.format_table(tbp, [8] * 12)
+    print asciart.format_table(tbp, [config.column_witdh] * 12)
     print "=========== Reward =============="
     tbp = fill_table(table, "reward")
-    print asciart.format_table(tbp, [8] * 12)
+    print asciart.format_table(tbp, [config.column_witdh] * 12)
 if __name__ == "__main__":
     tb = buildTable(4,12,[(0,1,1,11)])
     print_all_tables(tb)

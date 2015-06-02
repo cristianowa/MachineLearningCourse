@@ -44,9 +44,12 @@ class Configs:
         self.rows =  4
         self.columns = 12
         self.cliff = [(0,1,1,11)]
-        self.maxsteps = 50
+        self.maxsteps = 25
         self.start = (0,0)
         self.end = (0,11)
-
-
+        self.column_witdh = 11
+        self.stop_success = False
+        self.stop_best = False
+        self.episodes = 1000
+        self.policy = "greedy"
 config = Configs.Instance()
