@@ -12,7 +12,7 @@ class Sim:
         self.cliff = config.cliff
         self.states = main_table.buildTable(self.rows, self.columns, self.cliff, config.start, config.end)
     def show(self):
-        tbp = main_table.fill_table(self.states)
+        main_table.print_all_tables(self.states)
     def walk(self, direction):
         #TODO:border values are hardcoded
         self.nextState = copy(self.state)
@@ -40,29 +40,34 @@ class Sim:
                 self.nextState[1] -= 1
         else:
             raise Exception("Are you flying ? ")
+        print self.nextState
+
     def currentState(self):
-        return self.states[self.state[0],self.state[1]] 
-    def nextState(self):
-        return self.states[self.nextState[0], self.nextState[1]]
+        print self.state
+        return self.states[self.state[0]][self.state[1]]
+    def getNextState(self):
+        return self.states[self.nextState[0]][self.nextState[1]]
     def runEpisode(self, count = 1):
         for i in range(count):
+            print "Episode:" + str(i)
             self.state = [0,0]
             run = True
             step = 0
             while run:
+                print "step:"  + str(step)
                 step += 1
                 if step > config.maxsteps:
                     break
                 action = self.currentState().getBestAction()
                 alpha = 1/step #(maxsteps-step)/steps
-                self.walk() # updates current state
-                reward = self.nextState().reward
-                if self.nextState().cliff:
+                self.walk(action) # updates current state
+                reward = self.getNextState().reward
+                if self.getNextState().cliff:
                     run = False
                     #we have to stop the execution
                 q = self.currentState().dir(action)
-                q += alpha*(reward + self.nextState().maxQ() - self.currentState().dir(a))
-                self.currentState().setDir(a,q)
+                q += alpha*(reward + self.getNextState().maxQ() - self.currentState().dir(action))
+                self.currentState().setDir(action,q)
                 self.currentState().analysed = True
             self.show() 
 

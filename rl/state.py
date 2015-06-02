@@ -11,23 +11,24 @@ class State:
         self.right = right
         self.analysed = analysed
         self.reward = reward
+        self.policy = policy
     def dir(self, direction):
         return getattr(self,direction)
     def getBestAction(self):
         """ here is were the policy is defined
         we are using a greedy policy best action"""
-        directions = [up, down, left, right]
+        directions = [self.up, self.down, self.left, self.right]
         directions_names = ["up","down","left","right"]
-        if policy == "greedy":
+        if self.policy == "greedy":
            best = directions.index(max(directions))
-        elif policy == "random":
+        elif self.policy == "random":
             best = random.randint(0,3)
-        elif policy == "e-greedy":
+        elif self.policy == "e-greedy":
             return 0
         return directions_names[best]
     def setDir(self, direction, new_value):
         setattr(self,direction,new_value)
     def maxQ(self):
-        directions = [up, down, left, right]
+        directions = [self.up, self.down, self.left, self.right]
         return max(directions)
         
