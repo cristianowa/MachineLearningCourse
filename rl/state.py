@@ -31,4 +31,6 @@ class State:
     def maxQ(self):
         directions = [self.up, self.down, self.left, self.right]
         return max(directions)
-        
+    def __str__(self):
+        s = ""
+
