@@ -18,32 +18,32 @@ class Sim:
         self.nextState = copy(self.state)
 
         if direction == "left":
-            if self.state[0] == 0:
-                return False
-            else :
-                self.nextState[0]-=1
-        elif direction == "right":
-            if self.state[0] == 11:
-                return False
-            else:
-                self.nexState[0] +=1
-        elif direction == "up":
-            if self.state[1] == 3:
-                return False
-            else:
-                self.nextState[1] += 1
-
-        elif direction == "down":
             if self.state[1] == 0:
                 return False
+            else :
+                self.nextState[1]-=1
+        elif direction == "right":
+            if self.state[1] == 11:
+                return False
             else:
-                self.nextState[1] -= 1
+                self.nextState[1] +=1
+        elif direction == "up":
+            if self.state[0] == 3:
+                return False
+            else:
+                self.nextState[0] += 1
+
+        elif direction == "down":
+            if self.state[0] == 0:
+                return False
+            else:
+                self.nextState[0] -= 1
         else:
             raise Exception("Are you flying ? ")
-        print self.nextState
+        print "PREVIUS: " + str(self.state)
+        print "NEXT : " + str(self.nextState)
 
     def currentState(self):
-        print self.state
         return self.states[self.state[0]][self.state[1]]
     def getNextState(self):
         return self.states[self.nextState[0]][self.nextState[1]]
@@ -54,19 +54,27 @@ class Sim:
             run = True
             step = 0
             while run:
-                print "step:"  + str(step)
                 step += 1
                 if step > config.maxsteps:
                     break
                 action = self.currentState().getBestAction()
-                alpha = 1/step #(maxsteps-step)/steps
+                alpha = 1.0/step #(maxsteps-step)/steps
                 self.walk(action) # updates current state
                 reward = self.getNextState().reward
+                print "step:"  + str(step) + " action[" + str(action) + "] alpha[" + str(alpha) + "] nextState[" + str(self.nextState) + "]"
                 if self.getNextState().cliff:
+                    print "fall in the cliff "
                     run = False
                     #we have to stop the execution
                 q = self.currentState().dir(action)
-                q += alpha*(reward + self.getNextState().maxQ() - self.currentState().dir(action))
+                print "=========="
+                print alpha
+                print reward
+                print self.getNextState().maxQ()
+                print self.currentState().dir(action)
+                print "=========="
+                q += reward + alpha*(self.getNextState().maxQ() - self.currentState().dir(action))
+                print "setting " + str(self.state) + "action " + action + " with " + str(q)
                 self.currentState().setDir(action,q)
                 self.currentState().analysed = True
             self.show() 
