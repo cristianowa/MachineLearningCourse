@@ -41,7 +41,7 @@ def buildTable(row, column, cliff, start = (0,0), end = (0,11) ):
                 reward = -100
             maintable[i][j] = State(cliff = is_cliff, reward = reward)
     maintable[start[0]][start[1]].start = True
-    maintable[start[0]][start[1]].reward = 1000
+    maintable[end[0]][end[1]].reward = 1000
     maintable[end[0]][end[1]].end = True
     return maintable
 
@@ -54,12 +54,23 @@ def fill_table(table, direction):
             if table[i][j].cliff:
                 print_table[i][j] = " " + colored(asciart.symbols["x"],"blue") * 7 
             elif table[i][j].start:
-                print_table[i][j] = " S "
+                if direction not in ["gradient", "reward"]:
+                    print_table[i][j] = "S"  + str(round(table[i][j].dir(direction),3)) + " "
+
+                else:
+                    print_table[i][j] = "S"
             elif table[i][j].end:
-                print_table[i][j] = " G "
+                if direction not in ["gradient", "reward"]:
+                    print_table[i][j] = " G " + str(round(table[i][j].dir(direction),3)) + " "
+ 
+                else:
+                    print_table[i][j] = " G "
             elif direction == "gradient":
-                if table[i][j].analysed:
-                    print_table[i][j] = colored(asciart.arrows[print_table[i][j].getBestAction()])
+#                if table[i][j].analysed:
+                print_table[i][j] = "   " + colored(asciart.arrows[table[i][j].getBestAction()],"red") +"    "
+            elif direction == "reward":
+#                if table[i][j].analysed:
+                print_table[i][j] = colored(str(table[i][j].reward).rjust(8),"red")
             else:
                 print_table[i][j] += "  " + colored(str(round(table[i][j].dir(direction),5)), "cyan") + "  "
     return print_table
@@ -72,6 +83,9 @@ def print_all_tables(table):
         print asciart.format_table(tbp, [8]*12)
     print "=========== Gradient ============="
     tbp = fill_table(table, "gradient")
+    print asciart.format_table(tbp, [8] * 12)
+    print "=========== Reward =============="
+    tbp = fill_table(table, "reward")
     print asciart.format_table(tbp, [8] * 12)
 if __name__ == "__main__":
     tb = buildTable(4,12,[(0,1,1,11)])
