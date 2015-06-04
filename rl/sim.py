@@ -4,6 +4,7 @@ import asciart
 from copy import copy
 from configs import config
 import state
+from policy import tau
 
 
 class Sim:
@@ -79,7 +80,7 @@ class Sim:
                     self.state = self.nextState
                 self.currentState().analysed = True
             #Episode tear down
-            state.tau.reload()
+            tau.reload()
             #TODO: check if end is reached
             #TODO: check if best path was found
             if config.stop_success:

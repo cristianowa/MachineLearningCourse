@@ -1,21 +1,6 @@
-import random
 import math
 from configs import config
-from singleton import Singleton
-@Singleton
-class Tau:
-    def __init__(self, val = 1, step = 0.9):
-        self.val = val
-        self.current = val 
-        self.step = 0.1
-    def reload(self):
-        self.current = self.val
-    def get(self):
-        return self.current
-    def decrease(self):
-        self.current *= self.step
-tau = Tau.Instance()
-
+from policy import evaluate_policy
 class State:
     
     def __init__(self, start = False, end = False, cliff = False, up = -1.5, down = -1.5, left = -1.5, right = -1.5, analysed = False, reward = -1):
@@ -37,31 +22,10 @@ class State:
             acc += val
         return acc
     def getBestAction(self):
-        """ here is were the policy is defined
-        we are using a greedy policy best action"""
         directions = [self.up, self.down, self.left, self.right]
         directions_names = ["up","down","left","right"]
-        if self.policy == "greedy":
-           best = directions.index(max(directions))
-        elif self.policy == "random":
-            best = random.randint(0,3)
-        elif self.policy == "e-greedy":
-            e = 1/random.randint(1,100)
-            if e < config.episilon:
-                best = random.randint(0,3)
-            else:
-                best = directions.index(max(directions))
-        elif self.policy == "softmax":
-            qsum = self.actionSum()
-            policies = dict(zip(directions_names, directions))
-            for p in policies:
-                q = policies[p]
-                policies[p] = pow(math.e, q / tau.get()) / qsum
-            best = directions_names.index(max(policies))
-            print max(policies)
-            print best
-            tau.decrease()
-        return directions_names[best]
+
+        return evaluate_policy(self.policy, directions, directions_names)
     def setDir(self, direction, new_value):
         setattr(self,direction,new_value)
     def maxQ(self):
