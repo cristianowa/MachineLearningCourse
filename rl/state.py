@@ -1,6 +1,7 @@
 import random
 import math
-from configs import config, Singleton
+from configs import config
+from singleton import Singleton
 @Singleton
 class Tau:
     def __init__(self, val = 1, step = 0.9):
@@ -17,7 +18,7 @@ tau = Tau.Instance()
 
 class State:
     
-    def __init__(self, start = False, end = False, cliff = False, up = -1.5, down = -1.5, left = -1.5, right = -1.5, analysed = False, reward = -1, policy = "greedy", episilon = 0.1):
+    def __init__(self, start = False, end = False, cliff = False, up = -1.5, down = -1.5, left = -1.5, right = -1.5, analysed = False, reward = -1):
         self.start = start
         self.end = end
         self.cliff = cliff
@@ -27,7 +28,7 @@ class State:
         self.right = right
         self.analysed = analysed
         self.reward = reward
-        self.policy = policy
+        self.policy = config.policy
     def dir(self, direction):
         return getattr(self,direction)
     def actionSum(self):
@@ -45,8 +46,8 @@ class State:
         elif self.policy == "random":
             best = random.randint(0,3)
         elif self.policy == "e-greedy":
-            e = 1/randint.randint(0,100)
-            if e < self.episilon:
+            e = 1/random.randint(1,100)
+            if e < config.episilon:
                 best = random.randint(0,3)
             else:
                 best = directions.index(max(directions))
@@ -56,6 +57,9 @@ class State:
             for p in policies:
                 q = policies[p]
                 policies[p] = pow(math.e, q / tau.get()) / qsum
+            best = directions_names.index(max(policies))
+            print max(policies)
+            print best
             tau.decrease()
         return directions_names[best]
     def setDir(self, direction, new_value):

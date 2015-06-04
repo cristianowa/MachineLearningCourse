@@ -1,3 +1,4 @@
+import sys
 import main_table
 import asciart
 from copy import copy
@@ -52,7 +53,7 @@ class Sim:
         return self.states[self.nextState[0]][self.nextState[1]]
     def runEpisode(self, count = 1):
         for i in range(count):
-            print "Episode:" + str(i)
+#            print "Episode:" + str(i)
             self.state = [0,0]
             run = True
             step = 0
@@ -64,27 +65,20 @@ class Sim:
                 alpha = 1.0/step #(maxsteps-step)/steps
                 dowalk = self.walk(action) # updates current state
                 reward = self.getNextState().reward
-                print "=========="
-                print "step:"  + str(step) + " action[" + str(action) + "]",
-                print " alpha[" + str(alpha) + "] nextState[" + str(self.nextState) + "]",
-                print " currentState[" +str(self.state) + "]"
+                #print "step:"  + str(step) + " action[" + str(action) + "]",
+                #print " nextState[" + str(self.nextState) + "]",
+                #print " currentState[" +str(self.state) + "]"
                 if self.getNextState().cliff:
-                    print "fall in the cliff "
+                   # print "fall in the cliff "
                     run = False
-                    #we have to stop the execution
+                    #we have to stop the execution of this episode
                 q = self.currentState().dir(action)
                 gamma = 1
                 q += alpha*(reward + gamma*(self.getNextState().maxQ() - self.currentState().dir(action)))
-                print "setting " + str(self.state) + " action " + action + " with ",
-                print str(q) + " previus was " + str(self.currentState().dir(action)),
-                print " walk" + str(dowalk)
                 self.currentState().setDir(action,q)
                 if dowalk:
-                    print "DO WALK! " 
                     self.state = self.nextState
-                    print self.state
                 self.currentState().analysed = True
-                print "=========="
             #Episode tear down
             state.tau.reload()
             #TODO: check if end is reached
@@ -94,19 +88,23 @@ class Sim:
             
         self.show() 
 if __name__ == "__main__":
-    policies_str = "greedy, random, e-greedy, softmax" 
     parser = argparse.ArgumentParser(description = "Q-learning  exercise")
     parser.add_argument("-e","--episodes", help = "Number of episodes to be executed"       , dest = "episodes"      , default = config.episodes)
     parser.add_argument("-s","--steps"   , help = "Maximum numbef of steps for each episode", dest = "steps"         , default = config.maxsteps)
     parser.add_argument("-stop-success"  , help = "Stops if end is reached"                 , dest = "stop_success"  , action = "store_true")
     parser.add_argument("-stop-best"     , help = "Stops if best path is found"             , dest = "stop_best"     , action = "store_true")
-    parser.add_argument("-p", "-policy"  , help = "Defined policy from " + str(policies_str), dest = "policy"        , default = config.policy)
+    parser.add_argument("-p", "-policy"  , help = "Defined policy from " + str(config.valid_policies), dest = "policy"        , default = config.policy)
+    parser.add_argument("-episilon"      , help = "Episilon for e-greedy policy"            , dest = "episilon"      , default = config.episilon)
     args = parser.parse_args()
-    config.maxsteps = args.steps
+    config.maxsteps = int(args.steps)
     config.stop_best = args.stop_best
     config.stop_success = args.stop_success
+    if args.policy not in config.valid_policies:
+        print "Invalid policy"
+        sys.exit(0)
     config.policy = args.policy
-    config.episodes = args.episodes
+    config.episodes = int(args.episodes)
+    config.episilon = float(args.episilon)
     sim = Sim()
     sim.runEpisode(config.episodes)
 
