@@ -47,7 +47,7 @@ class Configs:
         self.maxsteps = 25
         self.start = (0,0)
         self.end = (0,11)
-        self.column_witdh = 11
+        self.column_witdh = 8
         self.stop_success = False
         self.stop_best = False
         self.episodes = 1000
