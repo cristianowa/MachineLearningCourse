@@ -59,13 +59,14 @@ class Sim:
             print "First episode that reached optimum path is :" + str(self.firstEpisodeBestReached)
     def checkReach(self, episode):
         if self.firstEpisodedReached != None:
-            return
+            return False
         if self.state == [0,11]:
             self.firstEpisodedReached = episode
+            return True
+        return False
     def checkBest(self, episode):
         if self.firstEpisodeBestReached != None:
-            return
-        print "CHECK BEST"
+            return False
         oracle = ["up"] + ["right"] *11 + ["down"]
         states_to_check = [[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7],[1,8],[1,9],[1,10],[1,11]]
         ok = True
@@ -75,6 +76,8 @@ class Sim:
                 ok = False
         if ok :
             self.firstEpisodeBestReached = episode
+            return True
+        return False
     def runEpisode(self, count = 1):
         for i in range(count):
             self.state = [0,0]
@@ -104,12 +107,10 @@ class Sim:
                 self.currentState().analysed = True
             #Episode tear down
             tau.reload()
-            self.checkReach(i)
-            self.checkBest(i)
-            #TODO: check if end is reached
-            #TODO: check if best path was found
-            if config.stop_success:
-                pass
+            if self.checkReach(i) and config.stop_success:
+                break
+            if self.checkBest(i) and config.stop_best:
+                break
 
         self.report()
 
