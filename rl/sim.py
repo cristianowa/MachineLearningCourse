@@ -14,6 +14,8 @@ class Sim:
         self.columns = config.columns
         self.cliff = config.cliff
         self.states = main_table.buildTable(self.rows, self.columns, self.cliff, config.start, config.end)
+        self.firstEpisodedReached = None
+        self.firstEpisodeBestReached = None
     def show(self):
         main_table.print_all_tables(self.states)
     def walk(self, direction):
@@ -44,16 +46,37 @@ class Sim:
         else:
             raise Exception("Are you flying ? ")
         return True
-        print "PREVIUS: " + str(self.state)
-        print "NEXT : " + str(self.nextState)
 
     def currentState(self):
         return self.states[self.state[0]][self.state[1]]
     def getNextState(self):
         return self.states[self.nextState[0]][self.nextState[1]]
+    def report(self):
+        self.show()
+        if self.firstEpisodedReached != None:
+            print "First episode that reached end is : " + str(self.firstEpisodedReached)
+        if self.firstEpisodeBestReached != None:
+            print "First episode that reached optimum path is :" + str(self.firstEpisodeBestReached)
+    def checkReach(self, episode):
+        if self.firstEpisodedReached != None:
+            return
+        if self.state == [0,11]:
+            self.firstEpisodedReached = episode
+    def checkBest(self, episode):
+        if self.firstEpisodeBestReached != None:
+            return
+        print "CHECK BEST"
+        oracle = ["up"] + ["right"] *11 + ["down"]
+        states_to_check = [[0,0],[1,0],[1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7],[1,8],[1,9],[1,10],[1,11]]
+        ok = True
+        for i in range(len(states_to_check)):
+            st = states_to_check[i]
+            if self.states[st[0]][st[1]].getBestAction() != oracle[i]:
+                ok = False
+        if ok :
+            self.firstEpisodeBestReached = episode
     def runEpisode(self, count = 1):
         for i in range(count):
-#            print "Episode:" + str(i)
             self.state = [0,0]
             run = True
             step = 0
@@ -81,10 +104,14 @@ class Sim:
                 self.currentState().analysed = True
             #Episode tear down
             tau.reload()
+            self.checkReach(i)
+            self.checkBest(i)
             #TODO: check if end is reached
             #TODO: check if best path was found
             if config.stop_success:
                 pass
-            
-        self.show() 
+
+        self.report()
+
+
 
