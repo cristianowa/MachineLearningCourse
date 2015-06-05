@@ -1,6 +1,7 @@
 from singleton import Singleton
 import random
 from configs import config
+import math
 @Singleton
 class Tau:
     def __init__(self, val = 1, step = 0.999):
@@ -15,6 +16,7 @@ class Tau:
         self.current *= self.step
 tau = Tau.Instance()
 
+
 def evaluate_policy(policy, values, names):
    if policy == "greedy":
       best = values.index(max(values))
@@ -27,7 +29,7 @@ def evaluate_policy(policy, values, names):
        else:
            best = values.index(max(values))
    elif policy == "softmax":
-       qsum = self.actionSum()
+       qsum = sum(values)
        policies = dict(zip(names, values))
        for p in policies:
            q = policies[p]

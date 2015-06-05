@@ -16,16 +16,11 @@ class State:
         self.policy = config.policy
     def dir(self, direction):
         return getattr(self,direction)
-    def actionSum(self):
-        acc = 0
-        for val in  [self.up, self.down, self.left, self.right]:
-            acc += val
-        return acc
     def getBestAction(self):
         directions = [self.up, self.down, self.left, self.right]
         directions_names = ["up","down","left","right"]
-
         return evaluate_policy(self.policy, directions, directions_names)
+
     def setDir(self, direction, new_value):
         setattr(self,direction,new_value)
     def maxQ(self):
