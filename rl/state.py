@@ -33,4 +33,11 @@ class State:
         return max(directions)
     def __str__(self):
         s = ""
+        directions = [self.up, self.down, self.left, self.right]
+        for d in directions:
+            s += str(d) + " "
+        s += " reward : " + str(self.reward)
+        s += " cliff : " + str(self.cliff)
+        s += " bestAction : " + str(self.getBestAction())
+        return s
 
