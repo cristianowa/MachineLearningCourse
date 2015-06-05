@@ -1,6 +1,6 @@
 from singleton import Singleton
 import random
-
+from configs import config
 @Singleton
 class Tau:
     def __init__(self, val = 1, step = 0.999):
