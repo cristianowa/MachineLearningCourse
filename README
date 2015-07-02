@@ -1,0 +1,11 @@
+This is a compilation of my assignments in the Machine Learning course.
+Some of it has errors and gaps.
+
+The Naive Bayes has a large dataset, so I won't commit it here.
+It is composed of 50000 (positive and negative each), with and without the topic to be predicted.
+
+The RL Task solves the Cliff walking problem. Here is a good description: http://neuro.bstu.by/ai/2009-demin.pdf.
+
+The Kmeans and EM have the dataset included. Running it will display and save the graphics.
+
+The ensembles are just the scripts I used to explore ensembles. They are based in the examples of the sklearn project.
